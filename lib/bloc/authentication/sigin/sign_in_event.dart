@@ -10,6 +10,7 @@ class SignInSubmittedEvent extends SignInEvent{
   SignInSubmittedEvent(this.email ,this.password);
 
 }
+class SigInInitialEvent extends SignInEvent{}
 
 class SignInTextChangedEvent extends SignInEvent{
   final String email ;

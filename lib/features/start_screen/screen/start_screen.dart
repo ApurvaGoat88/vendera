@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart' ;
+import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:vendera/common/colors.dart';
+import 'package:vendera/common/page_transitions.dart';
+import 'package:vendera/features/login/screen/login.dart';
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.sizeOf(context).height ;
-    final w = MediaQuery.sizeOf(context).width ;
-    const color = AppColors.heading ;
     return Scaffold(
       body: Container(
         height: h,
@@ -69,37 +70,41 @@ class StartScreen extends StatelessWidget {
                   SizedBox(
                     height: h*0.06,
                   ),
-                  ElevatedButton(onPressed: (){}, child: const Text('Login',style: TextStyle(
-                    fontSize: 20,
-                      fontFamily: 'mont'
-                  ),),style: ElevatedButton.styleFrom(
+                  ElevatedButton(onPressed: (){
+                    Navigator.push(context, createRoute(Login()))  ;
+                  },style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.button ,
                     foregroundColor: Colors.white,
                     fixedSize: const Size(250, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)
                     )
-                  ),),
+                  ), child: const Text('Login',style: TextStyle(
+                    fontSize: 20,
+                      fontFamily: 'mont'
+                  ),),),
                   SizedBox(
                     height: h*0.02,
                   )
-                  ,OutlinedButton(onPressed: (){}, child: const Text('Sign up',style: TextStyle(
-                      fontSize: 20,
-                    fontFamily: 'mont'
-                  ),
-                  ),style:OutlinedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.black,
-                    side: const BorderSide(
-                      color: Color(0xFF023020)
+                  ,GlassButton(onPressed: (){},
+                  radius: 10
+                    ,blur: 5,
+
+                  border: 2,borderGradient: const LinearGradient(
+                    begin: Alignment.bottomLeft,end: Alignment.bottomCenter,colors: [
+                    AppColors.button ,
+                      AppColors.heading,
+                      AppColors.heading,
+                    ]), child: Container(
+                    height: 35,
+                    alignment: Alignment.center,
+                    width: 224,
+                    child: const Text('Sign up',style: TextStyle(
+                        fontSize: 20,
+                      fontFamily: 'mont'
                     ),
 
-                    fixedSize: const Size(250, 50),
-                    shape: RoundedRectangleBorder(
-
-
-                      borderRadius: BorderRadius.circular(10)
-                    )
+                    ),
                   ),),
                   SizedBox(
                     height: h*0.02,
