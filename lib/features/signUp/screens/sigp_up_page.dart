@@ -5,21 +5,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:vendera/bloc/authentication/sigin/sign_in_bloc.dart';
+import 'package:vendera/bloc/authentication/sign_up/sign_up_bloc.dart';
 import 'package:vendera/common/colors.dart';
 import 'package:vendera/common/page_transitions.dart';
 import 'package:vendera/features/home_page/screen/home_page.dart';
-import 'package:vendera/features/signUp/screens/sigp_up_page.dart';
+import 'package:vendera/features/login/screen/login.dart';
 import 'package:vendera/models/user_model.dart';
-class Login extends StatefulWidget {
-  const Login({super.key});
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpPageState extends State<SignUpPage> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -44,13 +48,18 @@ class _LoginState extends State<Login> {
       }
       return user;
     } catch (error) {
+      print("Error during Google Sign-In: $error");
       return null;
     }
   }
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _cpasswordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+
   bool _obsure =false ;
+  bool _obsure2 =false ;
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.sizeOf(context).height ;
@@ -63,14 +72,14 @@ class _LoginState extends State<Login> {
           width: w,
           alignment: Alignment.bottomCenter,
           decoration: const BoxDecoration(
-            image: DecorationImage(image: AssetImage('assets/images/login_bg.jpg'),fit: BoxFit.cover)
+              image: DecorationImage(image: AssetImage('assets/images/signUp.jpg'),fit: BoxFit.cover)
           ),
           child: Container(
-            height: h*0.7,
+            height: h*0.77,
             width: w,
             decoration:  BoxDecoration(
-              color: Colors.grey.shade100.withOpacity(0.89),
-              borderRadius: const BorderRadius.only(topRight: Radius.circular(100) ,topLeft: Radius.circular(25))
+                color: Colors.grey.shade100.withOpacity(0.89),
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(25) ,topLeft: Radius.circular(80))
             ),
             child: Form(
               key: _formKey,
@@ -80,39 +89,82 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                        child:  SizedBox(
+                      child:  SizedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal:10.0),
                             child: RichText(
                               text: const TextSpan(
                                 style: TextStyle(
                                   fontFamily: 'philo',
-                                  fontSize: 40,
+                                  fontSize: 20,
                                   color: Color(0xFF023020),
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [
                                   TextSpan(
-                                      text: 'Step into your personalized space,\n'
+                                      text: 'Sign Up for a Greener Tomorrow!\n'
+                                          ,style: TextStyle(
+                                    fontSize: 28
+                                  )
                                   ),
-                                  TextSpan(
-                                      text: 'Log in and embark on your journey with us.',
-        
-                                      style: TextStyle(
-                                          fontSize: 25
-                                      )
-                                  ),
+
                                 ],
                               ),
-                            )
-                        ),
+                            ),
+                          )
+                      ),
                     ),
                     SizedBox(
-                      height: h*0.04,
+                      height: h*0.01,
                     ),
                     TextFormField(
-                      controller: _emailController,
-                      
+                      controller: _usernameController,
+
                       keyboardType: TextInputType.emailAddress,
-                      
+
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        suffixIcon: const Icon(Icons.person,color: AppColors.heading,),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+
+                      ),
+                      onChanged: (value){
+                        // BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
+                          BlocProvider.of<SignUpBloc>(context).add(SignUpTextChangedEvent(_emailController.text, _passwordController.text, _cpasswordController.text,_usernameController.text));
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+
+                      keyboardType: TextInputType.emailAddress,
+
                       decoration: InputDecoration(
                         labelText: 'Email',
                         suffixIcon: const Icon(Icons.email,color: AppColors.heading,),
@@ -121,8 +173,8 @@ class _LoginState extends State<Login> {
                             borderSide: const BorderSide(
                                 color: AppColors.heading,
                                 width: 2
-        
-        
+
+
                             )
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -130,23 +182,24 @@ class _LoginState extends State<Login> {
                             borderSide: const BorderSide(
                                 color: AppColors.heading,
                                 width: 2
-        
-        
+
+
                             )
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: AppColors.heading,
-                            width: 2
-        
-        
-                          )
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
                         ),
-        
+
                       ),
                       onChanged: (value){
-                        BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
+                        // BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
+                        BlocProvider.of<SignUpBloc>(context).add(SignUpTextChangedEvent(_emailController.text, _passwordController.text, _cpasswordController.text,_usernameController.text));
 
                       },
                     ),
@@ -157,10 +210,10 @@ class _LoginState extends State<Login> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Password',
-        
+
                         suffixIcon: IconButton(onPressed: (){
                           setState(() {
-        
+
                             _obsure = !_obsure ;
                           });
                         }, icon: Icon(Icons.remove_red_eye_rounded ,color: !_obsure ? AppColors.heading : AppColors.button,)),
@@ -169,8 +222,8 @@ class _LoginState extends State<Login> {
                             borderSide: const BorderSide(
                                 color: AppColors.heading,
                                 width: 2
-        
-        
+
+
                             )
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -178,8 +231,8 @@ class _LoginState extends State<Login> {
                             borderSide: const BorderSide(
                                 color: AppColors.heading,
                                 width: 2
-        
-        
+
+
                             )
                         ),
                         border: OutlineInputBorder(
@@ -187,59 +240,133 @@ class _LoginState extends State<Login> {
                             borderSide: const BorderSide(
                                 color: AppColors.heading,
                                 width: 2
-        
-        
+
+
                             )
                         ),
-        
+
                       ),
                       onChanged: (value){
-                        BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
+                        BlocProvider.of<SignUpBloc>(context).add(SignUpTextChangedEvent(_emailController.text, _passwordController.text, _cpasswordController.text,_usernameController.text));
+
+                        // BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
                       },
                     ),
                     const SizedBox(height:16),
-                    BlocBuilder<SignInBloc,SignInState>(builder: (context, state){
-                      if (state is SignInErrorState){
+                    TextFormField(
+                      controller: _cpasswordController,
+                      obscureText: !_obsure2,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+
+                        suffixIcon: IconButton(onPressed: (){
+                          setState(() {
+
+                            _obsure2 = !_obsure2 ;
+                          });
+                        }, icon: Icon(Icons.remove_red_eye_rounded ,color: !_obsure2 ? AppColors.heading : AppColors.button,)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.heading,
+                                width: 2
+
+
+                            )
+                        ),
+
+                      ),
+                      onChanged: (value){
+                        BlocProvider.of<SignUpBloc>(context).add(SignUpTextChangedEvent(_emailController.text, _passwordController.text, _cpasswordController.text,_usernameController.text));
+
+                        // BlocProvider.of<SignInBloc>(context).add(SignInTextChangedEvent(_emailController.text, _passwordController.text));
+                      },
+                    ),
+                    const SizedBox(height:16),
+                    BlocBuilder<SignUpBloc,SignUpState>(builder: (context, state){
+                      if (state is SignUpErrorState){
                         return Text(state.error,style: const TextStyle(
                             fontFamily: 'mont',
-
+                            fontSize: 10,
                             color: Colors.red
                         ),);
                       }
-                      else if (state is SignInValidState){
+                      else if (state is SignUpValidState){
                         return const Text('You are all set to Go! ',style: TextStyle(
                             fontFamily: 'mont',
-
+                            fontSize: 10,
                             color: Colors.green
                         ),);
                       }
                       else{
-                        return Container( );
+                        return Container();
                       }
                     }),
                     const SizedBox(height: 16),
-                    BlocBuilder<SignInBloc,SignInState>(
+                    BlocBuilder<SignUpBloc,SignUpState>(
                       builder: (context,state) {
                         return ElevatedButton(onPressed: ()async {
-                          if(state is SignInValidState){
-                            showDialog(barrierDismissible: false,context: context, builder: (context){
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.heading,
-                                ),
-                              );
-                            });
-                            final userCreds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
-                            final user = userCreds.user ;
-                            Navigator.pop(context) ;
-                            if (user!=null){
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                createRoute(const HomePage()),
-                                    (route) => false,
-                              );                            }
-                           
-                          }
+                          
+                          print(state) ;
+                            if(state is SignUpValidState) {
+                              print('auth');
+                              showDialog(barrierDismissible: false,context: context, builder: (context){
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.heading,
+                                  ),
+                                );
+                              });
+                              try {
+                                FirebaseAuth _auth = FirebaseAuth.instance;
+                                final userCredentials = await _auth
+                                    .createUserWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
+                                final usermodel = UserModel(
+                                    username: _usernameController.text,
+                                    email: _emailController.text,
+                                    uid: userCredentials.user!.uid.toString());
+                                await FirebaseFirestore.instance.collection(
+                                    'users').doc(usermodel.uid).set(
+                                    usermodel.toJson());
+                                final user = userCredentials.user;
+                                Navigator.pop(context);
+                                if(user != null){
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    createRoute(const HomePage()),
+                                        (route) => false,
+                                  );                                  }
+                              }
+                              catch (e){
+                                print(e.toString()) ;
+                              }
+
+                            }
+
+                            else{
+                              print("not signUp State");
+                            }
                         },style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.button ,
                             foregroundColor: Colors.white,
@@ -247,7 +374,7 @@ class _LoginState extends State<Login> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)
                             )
-                        ), child: const Text('Login',style: TextStyle(
+                        ), child: const Text('Create Account',style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'mont'
                         ),),);
@@ -316,24 +443,24 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                       ),),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text(
-                          "Don't have an account?",
+                        Text(
+                          "Already have an account?",
                           style: TextStyle(fontSize: 16),
                         ),
-                        const SizedBox(width: 5), // Adjust spacing if needed
+                        SizedBox(width: 5), // Adjust spacing if needed
                         GestureDetector(
-                          onTap: () {
-                            // Navigate to SignUp page or perform SignUp action
-                            Navigator.push(context, createRoute(SignUpPage()));
+                          onTap: ()  {
+                            Navigator.pushReplacement(context,createRoute(Login()) ) ;
+
                           },
-                          child: const Text(
-                            'Create now ',
+                          child: Text(
+                            'SignIn now',
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.heading),
                           ),
                         ),
@@ -344,7 +471,7 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          ),
+        ),
       ),
 
     );

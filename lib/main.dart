@@ -1,15 +1,19 @@
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
+
 import 'package:vendera/bloc/authentication/sigin/sign_in_bloc.dart';
+import 'package:vendera/bloc/authentication/sign_up/sign_up_bloc.dart';
 import 'package:vendera/bloc/connectivity/internet_bloc.dart';
 import 'package:vendera/features/connection_check/connectivity_check.dart';
-import 'package:vendera/features/start_screen/screen/start_screen.dart';
+import 'package:vendera/firebase_options.dart';
 
-void main(){
+
+void main()async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp
   ]);
@@ -24,7 +28,10 @@ class MyApp extends StatelessWidget {
     return   MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => InternetBloc()),
-        BlocProvider(create: (_) => SignInBloc())
+        BlocProvider(create: (_) => SignInBloc()),
+
+
+        BlocProvider(create: (_) => SignUpBloc())
       ],
 
       child: GlassApp(

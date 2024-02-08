@@ -3,6 +3,7 @@ import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:vendera/common/colors.dart';
 import 'package:vendera/common/page_transitions.dart';
 import 'package:vendera/features/login/screen/login.dart';
+import 'package:vendera/features/signUp/screens/sigp_up_page.dart';
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
@@ -86,7 +87,9 @@ class StartScreen extends StatelessWidget {
                   SizedBox(
                     height: h*0.02,
                   )
-                  ,GlassButton(onPressed: (){},
+                  ,GlassButton(onPressed: (){
+                    Navigator.push(context, createRoute(SignUpPage()))  ;
+                  },
                   radius: 10
                     ,blur: 5,
 

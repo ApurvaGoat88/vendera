@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vendera/bloc/connectivity/internet_bloc.dart';
 import 'package:vendera/common/colors.dart';
 import 'package:vendera/features/start_screen/screen/start_screen.dart';
+import 'package:vendera/features/start_screen/widgets/auth_check.dart';
 
 class InternetCheck extends StatelessWidget {
   const InternetCheck({super.key});
@@ -12,7 +13,7 @@ class InternetCheck extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<InternetBloc ,InternetState>(builder: (context , state){
       if (state is InternetGainState){
-        return const StartScreen() ;
+        return const AuthCheck() ;
       }
       else{
         return Scaffold(
